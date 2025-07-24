@@ -1,13 +1,14 @@
 package org.jboss.narayana.quickstarts.wsat.jtabridge.fromjta;
 
+import jakarta.transaction.UserTransaction;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.narayana.quickstarts.wsat.jtabridge.first.FirstServiceATImpl;
 import org.jboss.narayana.quickstarts.wsat.jtabridge.first.jaxws.FirstServiceAT;
+import org.jboss.narayana.quickstarts.wsat.jtabridge.first.jaxws.FirstServiceATService;
 import org.jboss.narayana.quickstarts.wsat.jtabridge.second.SecondServiceATImpl;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Assert;
@@ -17,8 +18,6 @@ import org.junit.runner.RunWith;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import jakarta.transaction.UserTransaction;
-
 import java.io.File;
 
 /**
@@ -26,20 +25,25 @@ import java.io.File;
  *
  * @author paul.robinson@redhat.com, 2012-01-04
  */
-@RunWith(Arquillian.class)
-public class BridgeFromJTATest {
+//@RunWith(Arquillian.class)
+public class PlainBridgeFromJTATest {
 
     private static final String ManifestMF = "Manifest-Version: 1.0\n"
             + "Dependencies: org.jboss.xts,org.jboss.jts\n";
 
-    private UserTransaction ut;
     private FirstServiceAT firstClient;
 
-    /**
-     * Create the deployment archive to be deployed by Arquillian.
-     *
-     * @return a JavaArchive representing the required deployment
-     */
+
+    @Before
+    public void setupTest() throws Exception {
+        firstClient = FirstClient.newInstance();
+    }
+
+    @After
+    public void teardownTest() throws Exception {
+        firstClient.resetCounter();
+    }
+
     @Deployment
     public static WebArchive createTestArchive() {
 
@@ -53,51 +57,26 @@ public class BridgeFromJTATest {
         return archive;
     }
 
-
-    @Before
-    public void setupTest() throws Exception {
-        Context initialContext = new InitialContext();
-        ut = (UserTransaction)initialContext.lookup("java:comp/UserTransaction");
-        firstClient = FirstClient.newInstance();
-    }
-
-    @After
-    public void teardownTest() throws Exception {
-        rollbackIfActive(ut);
-        try {
-            ut.begin();
-            firstClient.resetCounter();
-            ut.commit();
-        } finally {
-            rollbackIfActive(ut);
-        }
-    }
     @Test
     public void testSingle() throws Exception {
         System.out.println("[CLIENT] Beginning the first JTA transaction XXX");
-        ut.begin();
         System.out.println("[CLIENT] Calling incrementCounter on the WS firstClient stub. The registered interceptor will bridge rom JTA to WS-AT");
         firstClient.incrementCounter(1);
         System.out.println("[CLIENT] Update successful, about to commit the JTA transaction. This will also cause the bridged WS-AT transaction to commit");
-        ut.commit();
     }
 
     @Test
     public void testCommit() throws Exception {
         System.out.println("[CLIENT] Beginning the first JTA transaction");
-        ut.begin();
         System.out.println("[CLIENT] Calling incrementCounter on the WS firstClient stub. The registered interceptor will bridge rom JTA to WS-AT");
         firstClient.incrementCounter(1);
         System.out.println("[CLIENT] Update successful, about to commit the JTA transaction. This will also cause the bridged WS-AT transaction to commit");
-        ut.commit();
 
         System.out.println("[CLIENT] Beginning the second JTA transaction");
-        ut.begin();
         System.out.println("[CLIENT] Calling getFirstCounter and getSecondCounter on the WS firstClient stub. The registered interceptor will bridge rom JTA to WS-AT");
         int counter1 = firstClient.getFirstCounter();
         int counter2 = firstClient.getSecondCounter();
         System.out.println("[CLIENT] Counters obtained successfully, about to commit the JTA transaction. This will also cause the bridged WS-AT transaction to commit");
-        ut.commit();
 
         System.out.println("[CLIENT] Asserting that the counters were incremented successfully");
         Assert.assertEquals(1, counter1);
@@ -105,37 +84,20 @@ public class BridgeFromJTATest {
     }
 
     @Test
-    public void testClientDrivenRollback() throws Exception {
+    public void testServiceDrivenRollback() throws Exception {
         System.out.println("[CLIENT] Beginning the first JTA transaction");
-        ut.begin();
         System.out.println("[CLIENT] Calling incrementCounter on the WS firstClient stub. The registered interceptor will bridge rom JTA to WS-AT");
-        firstClient.incrementCounter(1);
+        firstClient.incrementCounterAndRollBack(1);
         System.out.println("[CLIENT] Update successful, about to rollback the JTA transaction. This will also cause the bridged WS-AT transaction to rollback");
-        ut.rollback();
 
         System.out.println("[CLIENT] Beginning the second JTA transaction");
-        ut.begin();
         System.out.println("[CLIENT] Calling getFirstCounter and getSecondCounter on the WS firstClient stub. The registered interceptor will bridge rom JTA to WS-AT");
         int counter1 = firstClient.getFirstCounter();
         int counter2 = firstClient.getSecondCounter();
         System.out.println("[CLIENT] Counters obtained successfully, about to commit the JTA transaction. This will also cause the bridged WS-AT transaction to commit");
-        ut.commit();
 
         System.out.println("[CLIENT] Asserting that the counter increments were *not* successful");
-        Assert.assertEquals("FirstCounter", 0, counter1);
-        Assert.assertEquals("SecondCounter", 0, counter2);
-    }
-
-    /**
-     * Utility method for rolling back a transaction if it is currently active.
-     *
-     * @param ut The User Business Activity to cancel.
-     */
-    private void rollbackIfActive(UserTransaction ut) {
-        try {
-            ut.rollback();
-        } catch (Throwable th2) {
-            // do nothing, not active
-        }
+        Assert.assertEquals(0, counter1);
+        Assert.assertEquals(0, counter2);
     }
 }

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -69,6 +68,11 @@
       <version>${version.jakarta.persistence-api}</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.sun.xml.ws</groupId>
+      <artifactId>jaxws-rt</artifactId>
+    </dependency>
+
   </dependencies>
 
   <!-- We add the JBoss repository as we need the JBoss AS connectors for Arquillian and also for the Narayana libraries-->
@@ -130,6 +134,24 @@
           </archive>
         </configuration>
       </plugin>
+      <!--plugin>
+        <groupId>com.sun.xml.ws</groupId>
+        <artifactId>jaxws-maven-plugin</artifactId>
+        <version>4.0.3</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>wsimport</goal>
+            </goals>
+            <configuration>
+              <wsdlUrls>
+                <wsdlUrl>http://localhost:8080/bridge/FirstServiceATService/FirstServiceAT?wsdl</wsdlUrl>
+              </wsdlUrls>
+              <packageName>org.jboss.narayana.quickstarts.wsat.jtabridge.firstclient</packageName>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin-->
     </plugins>
   </build>
 
