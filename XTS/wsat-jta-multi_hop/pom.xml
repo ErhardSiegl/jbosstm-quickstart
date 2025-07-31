@@ -80,9 +80,10 @@
     <dependency>
       <groupId>org.jboss.eap</groupId>
       <artifactId>wildfly-jpa</artifactId>
-      <version>8.0.8.GA-redhat-00001</version>
+      <version>8.0.0.GA-redhat-00011</version>
     </dependency>
-
+    <!--
+-->
   </dependencies>
 
   <!-- We add the JBoss repository as we need the JBoss AS connectors for Arquillian and also for the Narayana libraries-->

@@ -47,6 +47,7 @@ public class BridgeFromJTATest {
                 .addPackages(true, FirstServiceATImpl.class.getPackage())
                 .addPackages(true, SecondServiceATImpl.class.getPackage())
                 .addPackages(true, FirstClient.class.getPackage())
+                .addAsResource(new File("src/main/resources/context-handlers.xml"))
                 .addAsWebInfResource(new File("src/main/resources/META-INF/persistence.xml"), "classes/META-INF/persistence.xml");
 
         archive.setManifest(new StringAsset(ManifestMF));
