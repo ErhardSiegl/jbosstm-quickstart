@@ -38,6 +38,9 @@
         <extension module="org.wildfly.extension.security.manager"/>
         <extension module="org.wildfly.extension.undertow"/>
     </extensions>
+    <system-properties>
+        <property name="wildfly.statistics-enabled" value="true"/>
+    </system-properties>
     <management>
         <audit-log>
             <formatters>
@@ -511,11 +514,7 @@
             <client-config name="Standard-Client-Config"/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:weld:5.0"/>
-        <subsystem xmlns="urn:jboss:domain:xts:3.0">
-            <host name="default-host"/>
-            <xts-environment url="http://${jboss.bind.address:127.0.0.1}:8080/ws-c11/ActivationService"/>
-            <default-context-propagation enabled="true"/>
-        </subsystem>
+        <subsystem xmlns="urn:jboss:domain:xts:3.0"/>
     </profile>
     <interfaces>
         <interface name="management">
@@ -539,7 +538,7 @@
     </socket-binding-group>
     <deployments>
         <deployment name="bridge.war" runtime-name="bridge.war">
-            <content sha1="ec1db86a4ccf25c3121600817b110e2490349d96"/>
+            <content sha1="5b57dba8911ffc1f28859ebe16e3fff94b64b85a"/>
         </deployment>
     </deployments>
 </server>
