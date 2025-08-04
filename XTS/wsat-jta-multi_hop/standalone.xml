@@ -538,7 +538,7 @@
     </socket-binding-group>
     <deployments>
         <deployment name="bridge.war" runtime-name="bridge.war">
-            <content sha1="5b57dba8911ffc1f28859ebe16e3fff94b64b85a"/>
+            <content sha1="7ce326cd1b60f378b5adb474900df4e7a446fd7a"/>
         </deployment>
     </deployments>
 </server>

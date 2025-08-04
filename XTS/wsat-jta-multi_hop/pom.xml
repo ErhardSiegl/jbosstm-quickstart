@@ -72,6 +72,7 @@
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-rt</artifactId>
     </dependency>
+<!--
     <dependency>
       <groupId>org.jboss.ironjacamar</groupId>
       <artifactId>ironjacamar-core-impl</artifactId>
@@ -82,7 +83,6 @@
       <artifactId>wildfly-jpa</artifactId>
       <version>8.0.0.GA-redhat-00011</version>
     </dependency>
-    <!--
 -->
   </dependencies>
 

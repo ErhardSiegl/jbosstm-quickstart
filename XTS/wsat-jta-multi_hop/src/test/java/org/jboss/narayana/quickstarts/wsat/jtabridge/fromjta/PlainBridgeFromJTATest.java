@@ -1,11 +1,8 @@
 package org.jboss.narayana.quickstarts.wsat.jtabridge.fromjta;
 
-import jakarta.transaction.UserTransaction;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.narayana.quickstarts.wsat.jtabridge.first.FirstServiceATImpl;
 import org.jboss.narayana.quickstarts.wsat.jtabridge.first.jaxws.FirstServiceAT;
-import org.jboss.narayana.quickstarts.wsat.jtabridge.first.jaxws.FirstServiceATService;
 import org.jboss.narayana.quickstarts.wsat.jtabridge.second.SecondServiceATImpl;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -14,10 +11,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import java.io.File;
 
 /**
@@ -43,7 +37,6 @@ public class PlainBridgeFromJTATest {
     public void teardownTest() throws Exception {
         System.out.println("[CLIENT] Don't reset counter!!!!!!");
         // firstClient.resetCounter();
-        org.jboss.as.jpa.transaction.TransactionUtil tu;
     }
 
     @Deployment
@@ -65,7 +58,6 @@ public class PlainBridgeFromJTATest {
         System.out.println("[CLIENT] Calling incrementCounter on the WS firstClient stub. The registered interceptor will bridge rom JTA to WS-AT");
         firstClient.incrementCounter(1);
         System.out.println("[CLIENT] Update successful, about to commit the JTA transaction. This will also cause the bridged WS-AT transaction to commit");
-        org.jboss.jca.core.connectionmanager.listener.TxConnectionListener cl;
     }
 
     @Test
