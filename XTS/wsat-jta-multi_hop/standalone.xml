@@ -536,9 +536,4 @@
             <remote-destination host="${jboss.mail.server.host:localhost}" port="${jboss.mail.server.port:25}"/>
         </outbound-socket-binding>
     </socket-binding-group>
-    <deployments>
-        <deployment name="bridge.war" runtime-name="bridge.war">
-            <content sha1="7ce326cd1b60f378b5adb474900df4e7a446fd7a"/>
-        </deployment>
-    </deployments>
 </server>
